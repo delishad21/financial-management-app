@@ -26,7 +26,15 @@ const TransactionSchema = new Schema({
     default: Date.now,
     required: true,
   },
+  source: {
+    type: String,
+    required: true,
+  },
   category: {
+    type: String,
+    required: false,
+  },
+  label: {
     type: String,
     required: false,
   },
