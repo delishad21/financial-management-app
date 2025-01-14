@@ -1,0 +1,14 @@
+{
+  "bankName": "DBS/POSB",
+  "headerRowStart": 17,
+  "headers": {
+    "date": "Transaction Date",
+    "in": "Credit Amount",
+    "out": "Debit Amount",
+    "description": ["Transaction Ref1", "Transaction Ref2", "Transaction Ref3"]
+  },
+  "fixedData": {
+    "acc": { "row": 12, "col": 2 }
+  },
+  "dateFormat": "DD MMM YYYY"
+}

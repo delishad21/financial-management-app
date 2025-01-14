@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
 
+export interface ParsedTransaction {
+  in: number;
+  out: number;
+  date: Date;
+  description: string;
+  additionalInfo: object;
+}
+
 const Schema = mongoose.Schema;
 
 const TransactionSchema = new Schema({
@@ -26,9 +34,13 @@ const TransactionSchema = new Schema({
     default: Date.now,
     required: true,
   },
-  source: {
+  bank: {
     type: String,
-    required: true,
+    required: false,
+  },
+  acc: {
+    type: String,
+    required: false,
   },
   category: {
     type: String,

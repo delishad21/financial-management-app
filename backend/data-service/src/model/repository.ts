@@ -14,7 +14,8 @@ export async function createTransaction(
   amount: number,
   type: string,
   date: Date,
-  source: string,
+  bank: string,
+  acc: string,
   category: string,
   label: string,
   description: string,
@@ -25,7 +26,8 @@ export async function createTransaction(
     amount,
     type,
     date,
-    source,
+    bank,
+    acc,
     category,
     label,
     description,
@@ -38,7 +40,8 @@ export async function updateTransaction(
   amount: number,
   type: string,
   date: Date,
-  source: string,
+  bank: string,
+  acc: string,
   category: string,
   label: string,
   description: string,
@@ -50,7 +53,8 @@ export async function updateTransaction(
       amount,
       type,
       date,
-      source,
+      bank,
+      acc,
       category,
       label,
       description,
@@ -75,7 +79,8 @@ export async function getFilteredTransactions(
   userId: string,
   category?: string,
   type?: string,
-  source?: string,
+  bank?: string,
+  acc?: string,
   startDate?: Date,
   endDate?: Date,
   minAmount?: number,
@@ -88,8 +93,11 @@ export async function getFilteredTransactions(
   if (type) {
     filter.type = type;
   }
-  if (source) {
-    filter.source = source;
+  if (bank) {
+    filter.bank = bank;
+  }
+  if (acc) {
+    filter.acc = acc;
   }
   if (startDate && endDate) {
     filter.date = { $gte: startDate, $lte: endDate };
