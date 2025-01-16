@@ -1,7 +1,8 @@
 import fs from "fs"; // To handle file streams
 import csvParser from "csv-parser"; // For parsing CSV files
 import moment from "moment"; // For handling and formatting dates
-import { ParsedTransaction } from "../model/transaction-model";
+import { ParsedTransaction } from "../model/parsed-data-model";
+import ParsedFile from "../model/parsed-data-model";
 
 export function extractFixedData(
   filePath: string,
@@ -79,4 +80,31 @@ export function parseBankCSV(
       .on("end", () => resolve(transactions))
       .on("error", (err) => reject(err));
   });
+}
+
+export function retrieveParsedData(documentId: string) {
+  return ParsedFile.findOne({ documentId: documentId });
+}
+
+export async function uploadParsedData(
+  fixedData: any,
+  transactions: ParsedTransaction[],
+  filename: string,
+  bank: string
+) {
+  try {
+    const newParsedFile = new ParsedFile({
+      documentId: filename,
+      acc: fixedData.acc,
+      bank: bank,
+      transactions: transactions,
+      fixedData: fixedData,
+      createdAt: new Date(),
+    });
+
+    await newParsedFile.save();
+  } catch (error: any) {
+    console.error("Error uploading parsed data:", error);
+    throw new Error("Failed to upload parsed data");
+  }
 }

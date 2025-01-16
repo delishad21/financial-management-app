@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
 
-export interface ParsedTransaction {
-  in: number;
-  out: number;
-  date: Date;
-  description: string;
-  additionalInfo: object;
-}
-
 const Schema = mongoose.Schema;
 
 const TransactionSchema = new Schema({
