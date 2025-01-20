@@ -1,17 +1,20 @@
-import express, { Request, Response } from 'express';
+import http from "http";
+import index from "./index.js";
+import "dotenv/config";
+import { connectToDB } from "./model/repository.js";
 
-const app = express();
-const PORT = 7202;
+const port = process.env.USER_PORT || 8004;
 
-// Middleware to parse JSON
-app.use(express.json());
+const server = http.createServer(index);
 
-// Define a basic route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, User Service!');
-});
+connectToDB()
+  .then(() => {
+    console.log("MongoDB Connected!");
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+    server.listen(port);
+    console.log("User service server listening on http://localhost:" + port);
+  })
+  .catch((err) => {
+    console.error("Failed to connect to DB");
+    console.error(err);
+  });
