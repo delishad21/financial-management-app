@@ -21,7 +21,7 @@ export const makePasswordResetEmail = (
 ) => ({
   from: `"${emailName}" <${emailAddress}>`,
   to: email,
-  subject: "Reset Your ${appName} Password",
+  subject: `Reset Your ${appName} Password`,
   html: `
     <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
     <h2 style="text-align: center; color: #556cd6;">Reset Your Password</h2>
@@ -47,7 +47,7 @@ export const makeVerificationEmail = (
 ) => ({
   from: `"${emailName}" <${emailAddress}>`,
   to: email,
-  subject: "Confirm your ${appName} Account",
+  subject: `Confirm your ${appName} Account`,
   html: `
     <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
     <h2 style="text-align: center; color: #556cd6;">Confirm Your Account</h2>
@@ -71,7 +71,7 @@ export const makeVerificationEmailForEmailChange = (
 ) => ({
   from: `"${emailName}" <${emailAddress}>`,
   to: email,
-  subject: "Confirm your new email for ${appName}",
+  subject: `Confirm your new email for ${appName}`,
   html: `
       <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
       <h2 style="text-align: center; color: #556cd6;">Confirm your new email</h2>
