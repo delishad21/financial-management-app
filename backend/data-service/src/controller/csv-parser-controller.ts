@@ -82,8 +82,8 @@ export function parseBankCSV(
   });
 }
 
-export function retrieveParsedData(documentId: string) {
-  return ParsedFile.findOne({ documentId: documentId });
+export async function retrieveParsedData(documentId: string) {
+  return await ParsedFile.findOne({ documentId });
 }
 
 export async function uploadParsedData(

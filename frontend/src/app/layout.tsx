@@ -4,6 +4,9 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Experimental_CssVarsProvider } from "@mui/material";
 import { ThemeContextProvider } from "./provider";
+import { PublicEnvScript } from "next-runtime-env";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export default function RootLayout({
   children,
@@ -16,11 +19,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <PublicEnvScript />
+      </head>
       <body>
-        <ThemeContextProvider>
-          {/* Replace with sign in checks */}
-          {true ? application : landing}
-        </ThemeContextProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ThemeContextProvider>
+            {/* Replace with sign in checks */}
+            {true ? application : landing}
+          </ThemeContextProvider>
+        </LocalizationProvider>
       </body>
     </html>
   );

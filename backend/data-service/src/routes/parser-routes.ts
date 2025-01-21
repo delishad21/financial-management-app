@@ -29,7 +29,6 @@ parserRouter.post(
     if (filePath) {
       try {
         const transactions = await parseBankCSV(filePath, bankConfig);
-        console.log("transactions", transactions);
         const fixedData = extractFixedData(filePath, bankConfig.fixedData);
         await uploadParsedData(fixedData, transactions, fileName, bank);
         res.status(200).json({ message: "CSV parsed successfully", fileName });
@@ -50,7 +49,7 @@ parserRouter.get(
     const { documentId } = req.params;
     console.log(documentId);
     try {
-      const parsedData = retrieveParsedData(documentId);
+      const parsedData = await retrieveParsedData(documentId);
       res.status(200).json(parsedData);
     } catch (error: any) {
       res
