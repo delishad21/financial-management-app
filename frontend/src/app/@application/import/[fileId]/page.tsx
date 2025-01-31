@@ -195,7 +195,7 @@ const ParsedDataPage = () => {
         </Grid>
       </Grid>
 
-      <Box height="70vh" width="100%">
+      <Box height="calc(100vh - 300px)" width="100%">
         <DataGrid
           rows={transactions}
           columns={columns.map((col) => ({

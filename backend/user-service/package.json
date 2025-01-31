@@ -1,18 +1,12 @@
 {
   "name": "user-service",
   "version": "1.0.0",
-  "description": "",
-  "description": "",
   "main": "index.js",
-  "type": "module",
-  "type": "module",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,18 +19,9 @@
     "@types/node": "^22.10.7",
     "@types/nodemailer": "^6.4.17",
     "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "jose": "^5.9.6",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.4",
-    "nodemailer": "^6.9.15"
-  }
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",

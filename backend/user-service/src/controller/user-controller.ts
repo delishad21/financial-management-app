@@ -12,13 +12,13 @@ import {
   confirmUserById as _confirmUserById,
   updateUserPrivilegeById as _updateUserPrivilegeById,
   updateUserAccountCreationTime as _updateUserAccountCreationTime,
-} from "../model/repository.js";
+} from "../model/repository";
 import jwt from "jsonwebtoken";
 import {
   makeVerificationEmail,
   makeVerificationEmailForEmailChange,
   transporter,
-} from "../utils/mail.js";
+} from "../utils/mail";
 import { Request, Response } from "express";
 import { CustomRequest } from "../middleware/basic-access-control";
 

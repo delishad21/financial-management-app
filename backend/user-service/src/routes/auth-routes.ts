@@ -1,7 +1,7 @@
 import express from "express";
 
-import { handleLogin, handleVerifyToken, confirmUser, verifyPassword, handleForgetPassword } from "../controller/auth-controller.js";
-import { verifyAccessToken, verifyEmailToken } from "../middleware/basic-access-control.js";
+import { handleLogin, handleVerifyToken, confirmUser, verifyPassword, handleForgetPassword } from "../controller/auth-controller";
+import { verifyAccessToken, verifyEmailToken } from "../middleware/basic-access-control";
 
 const router = express.Router();
 

@@ -5,10 +5,10 @@ import {
   findUserByEmail as _findUserByEmail,
   findUserByUsername as _findUserByUsername,
   confirmUserById as _confirmUserById,
-} from "../model/repository.js";
-import { formatUserResponse } from "./user-controller.js";
-import { makePasswordResetEmail, transporter } from "../utils/mail.js";
-import { CustomRequest } from "../middleware/basic-access-control.js";
+} from "../model/repository";
+import { formatUserResponse } from "./user-controller";
+import { makePasswordResetEmail, transporter } from "../utils/mail";
+import { CustomRequest } from "../middleware/basic-access-control";
 
 const isEmail = (input: string): boolean =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(input);

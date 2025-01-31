@@ -10,14 +10,14 @@ import {
   deleteUserRequest,
   refreshEmailToken,
   updateEmailRequest,
-} from "../controller/user-controller.js";
+} from "../controller/user-controller";
 import {
   verifyAccessToken,
   verifyAccessTokenForUpdate,
   verifyEmailToken,
   verifyIsAdmin,
   verifyIsOwnerOrAdmin,
-} from "../middleware/basic-access-control.js";
+} from "../middleware/basic-access-control";
 
 const router = express.Router();
 

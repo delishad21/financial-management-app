@@ -4,9 +4,9 @@ import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 // components
 import PageContainer from "@/components/container/PageContainer";
 import Logo from "@/components/layout/shared/logo/Logo";
-import AuthLogin from "../auth/AuthLogin";
+import AuthLogin from "../../../../components/auth/AuthLogin";
 
-const Login2 = () => {
+const Login = () => {
   return (
     <PageContainer title="Login" description="this is Login page">
       <Box
@@ -44,9 +44,6 @@ const Login2 = () => {
               elevation={9}
               sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
             >
-              <Box display="flex" alignItems="center" justifyContent="center">
-                <Logo />
-              </Box>
               <AuthLogin
                 subtext={
                   <Typography
@@ -93,4 +90,4 @@ const Login2 = () => {
     </PageContainer>
   );
 };
-export default Login2;
+export default Login;

@@ -26,7 +26,7 @@ export default function RootLayout({
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <ThemeContextProvider>
             {/* Replace with sign in checks */}
-            {true ? application : landing}
+            {false ? application : landing}
           </ThemeContextProvider>
         </LocalizationProvider>
       </body>
