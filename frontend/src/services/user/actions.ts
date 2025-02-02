@@ -19,7 +19,7 @@ import {
   resetPasswordOptions,
 } from "./definitions";
 
-const USER_SERVICE_URL = env("NEXT_PUBLIC_USER_SERVICE_URL");
+const USER_SERVICE_URL = env("NEXT_PUBLIC_USER_SVC_URL");
 
 export const getSession = async () => {
   const session = await getIronSession<SessionData>(

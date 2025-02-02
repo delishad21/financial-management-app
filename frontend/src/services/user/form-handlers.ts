@@ -6,8 +6,8 @@ import {
   SignupFormSchema,
 } from './definitions';
 
-import { getIronSession } from 'iron-session';
-import { cookies } from 'next/headers';
+import { signUp } from './actions';
+import { redirect } from 'next/navigation';
 
 export async function handleRegister(
   state: FormState,
@@ -15,7 +15,7 @@ export async function handleRegister(
 ): Promise<FormState> {
 
   const validatedFields = SignupFormSchema.safeParse({
-    name: formData.get('name'),
+    username: formData.get('username'),
     email: formData.get('email'),
     password: formData.get('password'),
   });
@@ -27,13 +27,20 @@ export async function handleRegister(
     };
   }
 
-
-  const { name, email, password } = validatedFields.data;
-
   // Call the register function with the form data
 
+  const response = await signUp(formData);
 
-  // Create Session
+  if (response.status != "success") {
+    return {
+      errors: {
+        register: response.message
+      }
+    }
+  }
+
+  // Redirect to email verification page
+  redirect('/auth/email-confirmation');
 
 }
 

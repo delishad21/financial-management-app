@@ -4,9 +4,19 @@ import { env } from "next-runtime-env";
 
 
 export const SignupFormSchema = z.object({
-  name: z
+  username: z
     .string()
-    .min(2, { message: "Name must be at least 2 characters long." })
+    .min(3, { message: "Username must be at least 3 characters long." })
+    .max(30, { message: "Username must be at most 30 characters long." })
+    .regex(/^[a-zA-Z0-9._-]+$/, {
+      message: "Username can only contain letters, numbers, '.', '_', or '-'. No spaces allowed.",
+    })
+    .regex(/^(?!.*[._-]{2}).*$/, {
+      message: "Username cannot have consecutive special characters.",
+    })
+    .regex(/^[^._-].*[^._-]$/, {
+      message: "Username cannot start or end with '.', '_', or '-'.",
+    })
     .trim(),
   email: z.string().email({ message: "Please enter a valid email." }).trim(),
   password: z
@@ -28,9 +38,10 @@ export const LoginFormSchema = z.object({
 export type FormState =
   | {
       errors?: {
-        name?: string[];
+        username?: string[];
         email?: string[];
         password?: string[];
+        register?: string;
       };
       message?: string;
     }

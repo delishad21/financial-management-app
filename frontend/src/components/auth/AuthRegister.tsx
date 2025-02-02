@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-//@ts-ignore
 import { useFormState, useFormStatus } from 'react-dom';
 import { Box, Typography, Button, TextField, Stack } from '@mui/material';
 import { handleRegister } from '@/services/user/form-handlers';
@@ -36,21 +35,21 @@ export default function AuthRegister({ title, subtitle }: registerType) {
               variant="subtitle1"
               fontWeight={600}
               component="label"
-              htmlFor="name"
+              htmlFor="username"
               mb="5px"
             >
-              Name
+              Username
             </Typography>
             <TextField
-              id="name"
-              name="name"
+              id="username"
+              name="username"
               variant="outlined"
               fullWidth
-              placeholder="John Doe"
+              placeholder="johndoe"
             />
-            {state?.errors?.name && (
+            {state?.errors?.username && (
               <Typography color="error" variant="body2" pt={2}>
-                {state.errors.name}
+                {state.errors.username}
               </Typography>
             )}
           </div>
@@ -111,6 +110,11 @@ export default function AuthRegister({ title, subtitle }: registerType) {
         </Stack>
 
         <SignupButton />
+        {state?.errors?.register && (
+          <Typography color="error" variant="body2" pt={2}>
+            {state.errors.register}
+          </Typography>
+        )}
       </Box>
       {subtitle}
     </form>
