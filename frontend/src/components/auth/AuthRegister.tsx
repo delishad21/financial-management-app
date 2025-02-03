@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
-import { Box, Typography, Button, TextField, Stack } from '@mui/material';
-import { handleRegister } from '@/services/user/form-handlers';
+import React from "react";
+import { useFormState, useFormStatus } from "react-dom";
+import { Box, Typography, Button, TextField, Stack } from "@mui/material";
+import { handleRegister } from "@/services/user/form-handlers";
+import Link from "next/link";
 
 interface registerType {
   title?: string;
@@ -110,11 +111,27 @@ export default function AuthRegister({ title, subtitle }: registerType) {
         </Stack>
 
         <SignupButton />
-        {state?.errors?.register && (
-          <Typography color="error" variant="body2" pt={2}>
-            {state.errors.register}
+        {state?.message && (
+          <Typography color="error" variant="body1" pt={2}>
+            {state.message}
           </Typography>
         )}
+        <Stack direction="row" justifyContent="center" spacing={1} mt={3}>
+          <Typography color="textSecondary" variant="h6" fontWeight="400">
+            Already have an Account?
+          </Typography>
+          <Typography
+            component={Link}
+            href="/auth/login"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Sign In
+          </Typography>
+        </Stack>
       </Box>
       {subtitle}
     </form>
@@ -133,7 +150,7 @@ export function SignupButton() {
       type="submit"
       disabled={pending}
     >
-      {pending ? 'Submitting...' : 'Sign Up'}
+      {pending ? "Submitting..." : "Sign Up"}
     </Button>
   );
 }

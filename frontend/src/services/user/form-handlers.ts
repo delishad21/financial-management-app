@@ -1,23 +1,23 @@
-'use server';
+"use server";
 
 import {
-  FormState,
+  RegisterFormState,
+  LoginFormState,
   LoginFormSchema,
   SignupFormSchema,
-} from './definitions';
+} from "./definitions";
 
-import { signUp } from './actions';
-import { redirect } from 'next/navigation';
+import { login, signUp } from "./actions";
+import { redirect } from "next/navigation";
 
 export async function handleRegister(
-  state: FormState,
-  formData: FormData,
-): Promise<FormState> {
-
+  state: RegisterFormState,
+  formData: FormData
+): Promise<RegisterFormState> {
   const validatedFields = SignupFormSchema.safeParse({
-    username: formData.get('username'),
-    email: formData.get('email'),
-    password: formData.get('password'),
+    username: formData.get("username"),
+    email: formData.get("email"),
+    password: formData.get("password"),
   });
 
   // If any form fields are invalid, return early
@@ -33,27 +33,23 @@ export async function handleRegister(
 
   if (response.status != "success") {
     return {
-      errors: {
-        register: response.message
-      }
-    }
+      message: response.message,
+    };
   }
 
   // Redirect to email verification page
-  redirect('/auth/email-confirmation');
-
+  redirect("/auth/email-confirmation");
 }
 
 export async function handleLogin(
-  state: FormState,
-  formData: FormData,
-): Promise<FormState> {
+  state: LoginFormState,
+  formData: FormData
+): Promise<LoginFormState> {
   // 1. Validate form fields
   const validatedFields = LoginFormSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
+    identifier: formData.get("identifier"),
+    password: formData.get("password"),
   });
-  const errorMessage = { message: 'Invalid login credentials.' };
 
   // If any form fields are invalid, return early
   if (!validatedFields.success) {
@@ -62,10 +58,17 @@ export async function handleLogin(
     };
   }
 
-  const { email, password } = validatedFields.data;
-
   // Call the login function with the form data
+  const response = await login(formData);
 
+  if (response.status != "success") {
+    return {
+      message: response.message,
+    };
+  }
+
+  // Redirect to dashboard
+  redirect("/");
 }
 
 export async function logout() {

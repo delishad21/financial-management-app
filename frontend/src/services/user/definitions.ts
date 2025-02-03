@@ -2,14 +2,14 @@ import { z } from "zod";
 import { SessionOptions } from "iron-session";
 import { env } from "next-runtime-env";
 
-
 export const SignupFormSchema = z.object({
   username: z
     .string()
     .min(3, { message: "Username must be at least 3 characters long." })
     .max(30, { message: "Username must be at most 30 characters long." })
     .regex(/^[a-zA-Z0-9._-]+$/, {
-      message: "Username can only contain letters, numbers, '.', '_', or '-'. No spaces allowed.",
+      message:
+        "Username can only contain letters, numbers, '.', '_', or '-'. No spaces allowed.",
     })
     .regex(/^(?!.*[._-]{2}).*$/, {
       message: "Username cannot have consecutive special characters.",
@@ -31,17 +31,28 @@ export const SignupFormSchema = z.object({
 });
 
 export const LoginFormSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }),
-  password: z.string().min(1, { message: "Password field must not be empty." }),
+  identifier: z
+    .string()
+    .min(1, { message: "Please enter a valid username or email." }),
+  password: z.string().min(1, { message: "Please enter a valid password." }),
 });
 
-export type FormState =
+export type RegisterFormState =
   | {
       errors?: {
         username?: string[];
         email?: string[];
         password?: string[];
-        register?: string;
+      };
+      message?: string;
+    }
+  | undefined;
+
+export type LoginFormState =
+  | {
+      errors?: {
+        identifier?: string[];
+        password?: string[];
       };
       message?: string;
     }

@@ -1,12 +1,24 @@
 "use client";
 import Link from "next/link";
-import { Grid, Box, Card, Stack, Typography } from "@mui/material";
-// components
+import {
+  Grid,
+  Box,
+  Card,
+  Typography,
+  Stack,
+  IconButton,
+  Badge,
+  useTheme,
+} from "@mui/material";
 import PageContainer from "@/components/container/PageContainer";
-import Logo from "@/components/layout/shared/logo/Logo";
 import AuthLogin from "../../../../components/auth/AuthLogin";
+import { useThemeContext } from "@/app/provider";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 
 const Login = () => {
+  const { isDarkMode, toggleTheme } = useThemeContext();
+  const theme = useTheme();
+
   return (
     <PageContainer title="Login" description="this is Login page">
       <Box
@@ -14,16 +26,40 @@ const Login = () => {
           position: "relative",
           "&:before": {
             content: '""',
-            background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
-            backgroundSize: "400% 400%",
-            animation: "gradient 15s ease infinite",
+            background: `linear-gradient(145deg, ${
+              isDarkMode
+                ? theme.palette.primary.dark
+                : theme.palette.primary.main
+            } 50%, ${
+              isDarkMode ? theme.palette.grey[900] : theme.palette.grey[200]
+            } 0%)`,
             position: "absolute",
             height: "100%",
             width: "100%",
-            opacity: "0.3",
           },
         }}
       >
+        <IconButton
+          size="large"
+          aria-label="toggle dark mode"
+          color="inherit"
+          onClick={toggleTheme}
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            zIndex: 2,
+          }}
+        >
+          <Badge variant="dot" color="primary">
+            {isDarkMode ? (
+              <IconMoon size="21" stroke="1.5" />
+            ) : (
+              <IconSun size="21" stroke="1.5" />
+            )}
+          </Badge>
+        </IconButton>
+
         <Grid
           container
           spacing={0}
@@ -44,45 +80,7 @@ const Login = () => {
               elevation={9}
               sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
             >
-              <AuthLogin
-                subtext={
-                  <Typography
-                    variant="subtitle1"
-                    textAlign="center"
-                    color="textSecondary"
-                    mb={1}
-                  >
-                    Your Social Campaigns
-                  </Typography>
-                }
-                subtitle={
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    justifyContent="center"
-                    mt={3}
-                  >
-                    <Typography
-                      color="textSecondary"
-                      variant="h6"
-                      fontWeight="500"
-                    >
-                      New to Modernize?
-                    </Typography>
-                    <Typography
-                      component={Link}
-                      href="/authentication/register"
-                      fontWeight="500"
-                      sx={{
-                        textDecoration: "none",
-                        color: "primary.main",
-                      }}
-                    >
-                      Create an account
-                    </Typography>
-                  </Stack>
-                }
-              />
+              <AuthLogin title="Welcome Back" />
             </Card>
           </Grid>
         </Grid>
@@ -90,4 +88,5 @@ const Login = () => {
     </PageContainer>
   );
 };
+
 export default Login;

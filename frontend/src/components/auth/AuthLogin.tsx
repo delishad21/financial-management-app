@@ -7,10 +7,12 @@ import {
   Button,
   Stack,
   Checkbox,
+  TextField,
 } from "@mui/material";
 import Link from "next/link";
 
-import CustomTextField from "@/components/theme-elements/CustomTextField";
+import { handleLogin } from "@/services/user/form-handlers";
+import { useFormState, useFormStatus } from "react-dom";
 
 interface loginType {
   title?: string;
@@ -18,81 +20,137 @@ interface loginType {
   subtext?: JSX.Element | JSX.Element[];
 }
 
-const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
-  <>
-    {title ? (
-      <Typography fontWeight="700" variant="h2" mb={1}>
-        {title}
-      </Typography>
-    ) : null}
+const AuthLogin = ({ title, subtitle }: loginType) => {
+  const [state, action] = useFormState(handleLogin, undefined);
 
-    {subtext}
-
-    <Stack>
-      <Box>
+  return (
+    <form action={action}>
+      {title ? (
         <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="username"
-          mb="5px"
+          fontWeight="700"
+          variant="h3"
+          mb={5}
+          mt={2}
+          textAlign="center"
+          color="primary.main"
         >
-          Username
+          {title}
         </Typography>
-        <CustomTextField variant="outlined" fullWidth />
-      </Box>
-      <Box mt="25px">
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="password"
-          mb="5px"
-        >
-          Password
-        </Typography>
-        <CustomTextField type="password" variant="outlined" fullWidth />
-      </Box>
-      <Stack
-        justifyContent="space-between"
-        direction="row"
-        alignItems="center"
-        my={2}
-      >
-        <FormGroup>
+      ) : null}
+      <Stack>
+        <Box>
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+            component="label"
+            htmlFor="username"
+            mb="5px"
+          >
+            Username/Email
+          </Typography>
+          <TextField
+            id="identifier"
+            name="identifier"
+            variant="outlined"
+            fullWidth
+            placeholder="johndoe/johndoe@gmail.com"
+          />
+          {state?.errors?.identifier && (
+            <Typography color="error" variant="body2" pt={2}>
+              {state.errors.identifier}
+            </Typography>
+          )}
+        </Box>
+        <Box mt="25px">
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+            component="label"
+            htmlFor="password"
+            mb="5px"
+          >
+            Password
+          </Typography>
+          <TextField
+            id="password"
+            name="password"
+            variant="outlined"
+            fullWidth
+            type="password"
+            placeholder="••••••••"
+          />
+          {state?.errors?.password && (
+            <Typography color="error" variant="body2" pt={2}>
+              {state.errors.password}
+            </Typography>
+          )}
+        </Box>
+        <Stack justifyContent="left" direction="row" alignItems="center" my={2}>
+          {/* Checkbox for remembering password.
+        TODO: Update backend to support one time login */}
+          {/* <FormGroup>
           <FormControlLabel
             control={<Checkbox defaultChecked />}
             label="Remeber this Device"
           />
-        </FormGroup>
-        <Typography
-          component={Link}
-          href="/"
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-          }}
-        >
-          Forgot Password ?
-        </Typography>
+        </FormGroup> */}
+          <Typography
+            component={Link}
+            href="/"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Forgot Password?
+          </Typography>
+        </Stack>
       </Stack>
-    </Stack>
-    <Box>
-      <Button
-        color="primary"
-        variant="contained"
-        size="large"
-        fullWidth
-        component={Link}
-        href="/"
-        type="submit"
-      >
-        Sign In
-      </Button>
-    </Box>
-    {subtitle}
-  </>
-);
+      <Box>
+        <LoginButton />
+        {state?.message && (
+          <Typography color="error" variant="body1" pt={2} textAlign="center">
+            {state.message}
+          </Typography>
+        )}
+        <Stack direction="row" spacing={1} justifyContent="center" mt={3}>
+          <Typography color="textSecondary" fontWeight="500">
+            New to Financial Manager?
+          </Typography>
+          <Typography
+            component={Link}
+            href="/auth/register"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Create an account
+          </Typography>
+        </Stack>
+      </Box>
+      {subtitle}
+    </form>
+  );
+};
+
+export function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      color="primary"
+      variant="contained"
+      size="large"
+      fullWidth
+      type="submit"
+      disabled={pending}
+    >
+      {pending ? "Logging in..." : "Sign In"}
+    </Button>
+  );
+}
 
 export default AuthLogin;

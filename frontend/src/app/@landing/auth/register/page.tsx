@@ -7,16 +7,16 @@ import {
   Stack,
   IconButton,
   Badge,
+  useTheme,
 } from "@mui/material";
-import Link from "next/link";
 import PageContainer from "@/components/container/PageContainer";
 import AuthRegister from "../../../../components/auth/AuthRegister";
 import { useThemeContext } from "@/app/provider";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 
 const Register = () => {
-
   const { isDarkMode, toggleTheme } = useThemeContext();
+  const theme = useTheme();
 
   return (
     <PageContainer title="Register" description="this is Register page">
@@ -25,13 +25,16 @@ const Register = () => {
           position: "relative",
           "&:before": {
             content: '""',
-            background: "radial-gradient(#d2f1df,rgb(48, 48, 48),rgb(0, 0, 0))",
-            backgroundSize: "500% 500%",
-            animation: "gradient 15s ease infinite",
+            background: `linear-gradient(145deg, ${
+              isDarkMode
+                ? theme.palette.primary.dark
+                : theme.palette.primary.main
+            } 50%, ${
+              isDarkMode ? theme.palette.grey[900] : theme.palette.grey[200]
+            } 0%)`,
             position: "absolute",
             height: "100%",
             width: "100%",
-            opacity: "0.3",
           },
         }}
       >
@@ -76,36 +79,7 @@ const Register = () => {
               elevation={9}
               sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
             >
-              <AuthRegister
-                title="Register for Financial Manager"
-                subtitle={
-                  <Stack
-                    direction="row"
-                    justifyContent="center"
-                    spacing={1}
-                    mt={3}
-                  >
-                    <Typography
-                      color="textSecondary"
-                      variant="h6"
-                      fontWeight="400"
-                    >
-                      Already have an Account?
-                    </Typography>
-                    <Typography
-                      component={Link}
-                      href="/authentication/login"
-                      fontWeight="500"
-                      sx={{
-                        textDecoration: "none",
-                        color: "primary.main",
-                      }}
-                    >
-                      Sign In
-                    </Typography>
-                  </Stack>
-                }
-              />
+              <AuthRegister title="Register for Financial Manager" />
             </Card>
           </Grid>
         </Grid>

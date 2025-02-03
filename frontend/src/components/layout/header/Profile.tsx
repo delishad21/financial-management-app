@@ -9,12 +9,16 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@mui/material";
 
 import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
+import { logout } from "@/services/user/actions";
+import { redirect } from "next/navigation";
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const [logoutError, setLogoutError] = useState("");
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -22,6 +26,14 @@ const Profile = () => {
     setAnchorEl2(null);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await logout();
+      redirect("/");
+    } catch (error: any) {
+      setLogoutError(error.message);
+    }
+  };
   return (
     <Box>
       <IconButton
@@ -67,30 +79,22 @@ const Profile = () => {
           <ListItemIcon>
             <IconUser width={20} />
           </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconMail width={20} />
-          </ListItemIcon>
           <ListItemText>My Account</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconListCheck width={20} />
-          </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
         </MenuItem>
         <Box mt={1} py={1} px={2}>
           <Button
-            href="/authentication/login"
+            onClick={handleLogout}
             variant="outlined"
             color="primary"
-            component={Link}
             fullWidth
           >
             Logout
           </Button>
+          {logoutError && (
+            <Typography color="error" variant="body2" pt={1} textAlign="center">
+              {logoutError}
+            </Typography>
+          )}
         </Box>
       </Menu>
     </Box>
