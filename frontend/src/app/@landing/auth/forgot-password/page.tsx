@@ -38,6 +38,8 @@ const EmailConfirmation = () => {
     } else {
       setDisableSubmit(false);
       localStorage.removeItem("countdown");
+      setMessage("");
+      setError("");
     }
   }, [countdown]);
 
