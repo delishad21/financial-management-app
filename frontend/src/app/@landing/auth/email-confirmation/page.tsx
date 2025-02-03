@@ -68,14 +68,12 @@ const EmailConfirmation = () => {
 
     if (response.status === "error") {
       setError(response.message);
-      return;
     }
 
     if (response.status === "success") {
       console.log("Email confirmed successfully!");
       router.push("/");
     }
-
   };
 
   const handleResendCode = () => {
@@ -105,7 +103,8 @@ const EmailConfirmation = () => {
           position: "relative",
           "&:before": {
             content: '""',
-            background: "radial-gradient(#d2f1df, rgb(48, 48, 48), rgb(0, 0, 0))",
+            background:
+              "radial-gradient(#d2f1df, rgb(48, 48, 48), rgb(0, 0, 0))",
             backgroundSize: "500% 500%",
             animation: "gradient 15s ease infinite",
             position: "absolute",
@@ -196,9 +195,8 @@ const EmailConfirmation = () => {
                   </Typography>
                 )}
 
-
-              {/* Resend Code Text */}
-              {countdown === 0 ? (
+                {/* Resend Code Text */}
+                {countdown === 0 ? (
                   <Typography
                     color="primary"
                     textAlign="center"
@@ -210,11 +208,7 @@ const EmailConfirmation = () => {
                     <span style={{ fontWeight: "bold" }}>Send again</span>
                   </Typography>
                 ) : (
-                  <Typography
-                    color="primary"
-                    textAlign="center"
-                    p={2}
-                  >
+                  <Typography color="primary" textAlign="center" p={2}>
                     Please wait {countdown} seconds before sending again.
                   </Typography>
                 )}

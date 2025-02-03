@@ -24,7 +24,7 @@ const USER_SERVICE_URL = env("NEXT_PUBLIC_USER_SVC_URL");
 export const getSession = async () => {
   const session = await getIronSession<SessionData>(
     cookies() as any,
-    sessionOptions,
+    sessionOptions
   );
 
   if (!session.isLoggedIn) {
@@ -41,7 +41,7 @@ export const getSession = async () => {
 export const getCreateUserSession = async () => {
   const session = await getIronSession<CreateUserSessionData>(
     cookies(),
-    createUserOptions,
+    createUserOptions
   );
 
   if (!session.isPending) {
@@ -54,7 +54,7 @@ export const getCreateUserSession = async () => {
 export const getEmailChangeSession = async () => {
   const session = await getIronSession<EmailChangeSessionData>(
     cookies(),
-    emailChangeOptions,
+    emailChangeOptions
   );
 
   return session;
@@ -63,7 +63,7 @@ export const getEmailChangeSession = async () => {
 export const getResetPasswordSession = async () => {
   const session = await getIronSession<ResetPasswordSessionData>(
     cookies(),
-    resetPasswordOptions,
+    resetPasswordOptions
   );
 
   return session;
@@ -298,7 +298,7 @@ export const resendCode = async () => {
       {
         method: "PATCH",
         headers: { Authorization: `Bearer ${emailToken}` },
-      },
+      }
     );
 
     if (response.ok) {
@@ -470,7 +470,7 @@ export const editUsername = async (newUsername: string) => {
     const updatedToken = await updateTokenWithField(
       session.accessToken,
       "username",
-      secret,
+      secret
     );
     const response = await fetch(
       `${USER_SERVICE_URL}/users/${session.userId}`,
@@ -483,7 +483,7 @@ export const editUsername = async (newUsername: string) => {
         body: JSON.stringify({
           username: newUsername,
         }),
-      },
+      }
     );
 
     if (response.ok) {
@@ -520,7 +520,7 @@ export const editEmailRequest = async (newEmail: string) => {
   const session = await getSession();
 
   console.log(
-    `${USER_SERVICE_URL}/users/${session.userId}/email-update-request`,
+    `${USER_SERVICE_URL}/users/${session.userId}/email-update-request`
   );
   console.log(session.accessToken);
 
@@ -537,7 +537,7 @@ export const editEmailRequest = async (newEmail: string) => {
         body: JSON.stringify({
           email: newEmail,
         }),
-      },
+      }
     );
 
     if (response.ok) {
@@ -617,7 +617,7 @@ export const verifyEmailCode = async (code: number, newEmail: string) => {
       const updatedToken = await updateTokenWithField(
         accessToken,
         "email",
-        secret,
+        secret
       );
 
       // If code matches, update the email
@@ -633,7 +633,7 @@ export const verifyEmailCode = async (code: number, newEmail: string) => {
           body: JSON.stringify({
             email: newEmail,
           }),
-        },
+        }
       );
 
       if (response.ok) {
@@ -697,7 +697,7 @@ export const changePassword = async (newPassword: string) => {
     const updatedToken = await updateTokenWithField(
       session.accessToken,
       "password",
-      secret,
+      secret
     );
 
     const response = await fetch(
@@ -711,7 +711,7 @@ export const changePassword = async (newPassword: string) => {
         body: JSON.stringify({
           password: newPassword,
         }),
-      },
+      }
     );
 
     if (response.ok) {
@@ -761,7 +761,7 @@ export const resetPassword = async (newPassword: string) => {
     const updatedToken = await updateTokenWithField(
       resetToken,
       "password",
-      secret,
+      secret
     );
 
     const response = await fetch(`${USER_SERVICE_URL}/users/${userId}`, {
@@ -812,7 +812,7 @@ export const deleteUser = async () => {
   const updatedToken = await updateTokenWithField(
     session.accessToken,
     "delete",
-    secret,
+    secret
   );
 
   const response = await fetch(`${USER_SERVICE_URL}/users/${session.userId}`, {
@@ -887,7 +887,7 @@ export const forgetPassword = async (identifier: string) => {
 async function updateTokenWithField(
   token: string,
   field: string,
-  secret: string,
+  secret: string
 ): Promise<string> {
   const secretKey = new TextEncoder().encode(secret);
 

@@ -1,7 +1,10 @@
+"use client";
 import React, { createContext, useContext, useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { baselightTheme, darkTheme } from "@/utils/theme/DefaultColors";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const ThemeContext = createContext({
   isDarkMode: true,
@@ -10,11 +13,7 @@ const ThemeContext = createContext({
 
 export const useThemeContext = () => useContext(ThemeContext);
 
-export const ThemeContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const Providers = ({ children }: { children: React.ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   const toggleTheme = () => {
@@ -23,10 +22,12 @@ export const ThemeContextProvider = ({
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-      <ThemeProvider theme={isDarkMode ? darkTheme : baselightTheme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ThemeProvider theme={isDarkMode ? darkTheme : baselightTheme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </LocalizationProvider>
     </ThemeContext.Provider>
   );
 };
