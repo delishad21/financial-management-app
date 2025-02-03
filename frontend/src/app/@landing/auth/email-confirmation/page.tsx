@@ -14,8 +14,11 @@ import PageContainer from "@/components/container/PageContainer";
 import { useThemeContext } from "@/app/provider";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
+import { verifyCode } from "@/services/user/actions";
+import { useRouter } from "next/navigation";
 
 const EmailConfirmation = () => {
+  const router = useRouter();
   const { isDarkMode, toggleTheme } = useThemeContext();
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const [error, setError] = useState<string>("");
@@ -56,17 +59,23 @@ const EmailConfirmation = () => {
     }
   };
 
-  const handleConfirm = () => {
-    const enteredCode = code.join("");
-    console.log("Code entered:", enteredCode);
+  const handleConfirm = async () => {
+    const enteredCode = Number(code.join(""));
 
-    // Simulate error condition for now
-    if (enteredCode !== "123456") {
-      setError("The code entered is incorrect. Please try again.");
-    } else {
-      setError(""); // Reset error if code is correct
-      // Proceed with email confirmation logic here
+    const response = await verifyCode(enteredCode);
+
+    console.log(response);
+
+    if (response.status === "error") {
+      setError(response.message);
+      return;
     }
+
+    if (response.status === "success") {
+      console.log("Email confirmed successfully!");
+      router.push("/");
+    }
+
   };
 
   const handleResendCode = () => {
