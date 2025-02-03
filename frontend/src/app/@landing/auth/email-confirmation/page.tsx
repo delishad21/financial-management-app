@@ -14,13 +14,15 @@ import PageContainer from "@/components/container/PageContainer";
 import { useThemeContext } from "@/app/provider";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
-import { verifyCode } from "@/services/user/actions";
+import { resendCode, verifyCode } from "@/services/user/actions";
 import { useRouter } from "next/navigation";
+import { set } from "lodash";
 
 const EmailConfirmation = () => {
   const router = useRouter();
   const { isDarkMode, toggleTheme } = useThemeContext();
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
+  const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [countdown, setCountdown] = useState<number>(0); // Countdown state
 
@@ -59,6 +61,43 @@ const EmailConfirmation = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      // Move to the previous box on backspace if empty
+      const prevField = document.getElementById(`digit-${index - 1}`);
+      prevField?.focus();
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      // Move cursor to the previous field32
+      e.preventDefault();
+      const prevField = document.getElementById(`digit-${index - 1}`);
+      prevField?.focus();
+    } else if (e.key === "ArrowRight" && index < 5) {
+      // Move cursor to the next field
+      e.preventDefault();
+      const nextField = document.getElementById(`digit-${index + 1}`);
+      nextField?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasteData = e.clipboardData.getData("text").slice(0, 6);
+    const newCode = [...code];
+    pasteData.split("").forEach((char, i) => {
+      if (/^\d$/.test(char)) {
+        newCode[i] = char;
+      }
+    });
+    setCode(newCode);
+
+    // Focus the next empty field after the paste
+    const nextEmptyIndex = newCode.findIndex((digit) => digit === "");
+    if (nextEmptyIndex !== -1) {
+      const nextField = document.getElementById(`digit-${nextEmptyIndex}`);
+      nextField?.focus();
+    }
+  };
+
   const handleConfirm = async () => {
     const enteredCode = Number(code.join(""));
 
@@ -71,17 +110,27 @@ const EmailConfirmation = () => {
     }
 
     if (response.status === "success") {
-      console.log("Email confirmed successfully!");
-      router.push("/");
+      setMessage("Email confirmed successfully!");
+      setError("");
+      setCountdown(0); // Clear cooldown
+
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
     }
   };
 
-  const handleResendCode = () => {
+  const handleResendCode = async () => {
     if (countdown > 0) return; // Prevent clicking if cooldown is active
+    setCountdown(60); // Set cooldown to 60 seconds
 
-    console.log("Resending code...");
-    // Start cooldown countdown
-    setCountdown(60);
+    const response = await resendCode();
+    if (response.status === "error") {
+      setError(response.message);
+      setCountdown(0); // Clear cooldown
+    }
+    if (response.status === "success") {
+    }
   };
 
   // Handle countdown updates every second
@@ -97,138 +146,103 @@ const EmailConfirmation = () => {
   }, [countdown]);
 
   return (
-    <PageContainer title="Email Confirmation" description="Confirm your email">
-      <Box
-        sx={{
-          position: "relative",
-          "&:before": {
-            content: '""',
-            background:
-              "radial-gradient(#d2f1df, rgb(48, 48, 48), rgb(0, 0, 0))",
-            backgroundSize: "500% 500%",
-            animation: "gradient 15s ease infinite",
-            position: "absolute",
-            height: "100%",
-            width: "100%",
-            opacity: "0.3",
-          },
-        }}
+    <>
+      <Grid
+        container
+        spacing={0}
+        justifyContent="center"
+        sx={{ height: "100vh" }}
       >
-        <IconButton
-          size="large"
-          aria-label="toggle dark mode"
-          color="inherit"
-          onClick={toggleTheme}
-          sx={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-            zIndex: 2,
-          }}
-        >
-          <Badge variant="dot" color="primary">
-            {isDarkMode ? (
-              <IconMoon size="21" stroke="1.5" />
-            ) : (
-              <IconSun size="21" stroke="1.5" />
-            )}
-          </Badge>
-        </IconButton>
-
         <Grid
-          container
-          spacing={0}
+          item
+          xs={12}
+          sm={12}
+          lg={4}
+          xl={3}
+          display="flex"
           justifyContent="center"
-          sx={{ height: "100vh" }}
+          alignItems="center"
         >
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            lg={4}
-            xl={3}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+          <Card
+            elevation={9}
+            sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
           >
-            <Card
-              elevation={9}
-              sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
-            >
-              <Typography
-                variant="h4"
-                textAlign="center"
-                fontWeight="600"
-                mb={3}
-              >
-                Email Confirmation
-              </Typography>
+            <Typography variant="h4" textAlign="center" fontWeight="600" mb={3}>
+              Email Confirmation
+            </Typography>
 
-              <Typography variant="subtitle1" textAlign="center" mb={2}>
-                Enter the 6-digit code sent to your email.
-              </Typography>
+            <Typography variant="subtitle1" textAlign="center" mb={2}>
+              Enter the 6-digit code sent to your email.
+            </Typography>
 
-              <Stack spacing={0}>
-                <Stack direction="row" justifyContent="center" spacing={1}>
-                  {code.map((digit, index) => (
-                    <TextField
-                      key={index}
-                      id={`digit-${index}`}
-                      value={digit}
-                      onChange={(e) => handleInputChange(e.target.value, index)}
-                      variant="outlined"
-                      inputProps={{
-                        maxLength: 1,
-                        style: {
-                          textAlign: "center",
-                          fontSize: "1.5rem",
-                        },
-                      }}
-                      sx={{ width: "3rem" }}
-                    />
-                  ))}
-                </Stack>
-
-                {error && (
-                  <Typography color="error" textAlign="center" mt={2}>
-                    {error}
-                  </Typography>
-                )}
-
-                {/* Resend Code Text */}
-                {countdown === 0 ? (
-                  <Typography
-                    color="primary"
-                    textAlign="center"
-                    p={2}
-                    sx={{ cursor: "pointer" }}
-                    onClick={handleResendCode}
-                  >
-                    Didn't receive the code?{" "}
-                    <span style={{ fontWeight: "bold" }}>Send again</span>
-                  </Typography>
-                ) : (
-                  <Typography color="primary" textAlign="center" p={2}>
-                    Please wait {countdown} seconds before sending again.
-                  </Typography>
-                )}
-
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="large"
-                  fullWidth
-                  onClick={handleConfirm}
-                  disabled={code.some((digit) => digit === "")}
-                >
-                  Confirm Email
-                </Button>
+            <Stack spacing={0}>
+              <Stack direction="row" justifyContent="center" spacing={1}>
+                {code.map((digit, index) => (
+                  <TextField
+                    key={index}
+                    id={`digit-${index}`}
+                    value={digit}
+                    onChange={(e) => handleInputChange(e.target.value, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onPaste={handlePaste}
+                    variant="outlined"
+                    inputProps={{
+                      maxLength: 1,
+                      style: {
+                        textAlign: "center",
+                        fontSize: "1.5rem",
+                      },
+                    }}
+                    sx={{ width: "3rem" }}
+                  />
+                ))}
               </Stack>
-            </Card>
-          </Grid>
+
+              {error && !message && (
+                <Typography color="error" textAlign="center" mt={2}>
+                  {error}
+                </Typography>
+              )}
+
+              {message && (
+                <Typography color="success" textAlign="center" mt={2}>
+                  {message}
+                </Typography>
+              )}
+
+              {/* Resend Code Text */}
+              {countdown === 0 ? (
+                <Typography
+                  color="primary"
+                  textAlign="center"
+                  p={2}
+                  sx={{ cursor: "pointer" }}
+                  onClick={handleResendCode}
+                >
+                  Didn't receive the code?{" "}
+                  <span style={{ fontWeight: "bold" }}>Send again</span>
+                </Typography>
+              ) : (
+                <Typography color="primary" textAlign="center" p={2}>
+                  Please wait {countdown} seconds before sending again.
+                </Typography>
+              )}
+
+              <Button
+                color="primary"
+                variant="contained"
+                size="large"
+                fullWidth
+                onClick={handleConfirm}
+                disabled={code.some((digit) => digit === "")}
+              >
+                Confirm Email
+              </Button>
+            </Stack>
+          </Card>
         </Grid>
-      </Box>
-    </PageContainer>
+      </Grid>
+    </>
   );
 };
 

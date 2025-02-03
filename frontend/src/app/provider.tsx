@@ -14,17 +14,23 @@ const ThemeContext = createContext({
 export const useThemeContext = () => useContext(ThemeContext);
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    const storedTheme = localStorage.getItem("financial-planner-theme");
-    return storedTheme ? JSON.parse(storedTheme) : false;
-  });
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(true); // set dark on initialisation to avoid flash of light theme
 
   useEffect(() => {
-    localStorage.setItem("financial-planner-theme", JSON.stringify(isDarkMode));
-  }, [isDarkMode]);
+    const storedTheme = localStorage.getItem("financial-planner-theme");
+    if (storedTheme !== null) {
+      setIsDarkMode(JSON.parse(storedTheme));
+    } else {
+      setIsDarkMode(false); // Default theme is light
+    }
+  }, []);
 
   const toggleTheme = () => {
-    setIsDarkMode((prev) => !prev);
+    setIsDarkMode((prev: boolean) => {
+      const newTheme = !prev;
+      localStorage.setItem("financial-planner-theme", JSON.stringify(newTheme));
+      return newTheme;
+    });
   };
 
   return (
