@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { baselightTheme, darkTheme } from "@/utils/theme/DefaultColors";
@@ -14,7 +14,14 @@ const ThemeContext = createContext({
 export const useThemeContext = () => useContext(ThemeContext);
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    const storedTheme = localStorage.getItem("financial-planner-theme");
+    return storedTheme ? JSON.parse(storedTheme) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("financial-planner-theme", JSON.stringify(isDarkMode));
+  }, [isDarkMode]);
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => !prev);

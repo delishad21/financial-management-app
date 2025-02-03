@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import PageContainer from "@/components/container/PageContainer";
-import sampleGraphic from "@/public/financial-graphic.png"; // Replace with actual image
+import lightGraphic from "@/public/financial-graphic-light.png";
+import darkGraphic from "@/public/financial-graphic-dark.png";
 import { useThemeContext } from "@/app/provider";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 
@@ -35,7 +36,7 @@ const HomePage = () => {
           background: `linear-gradient(145deg, ${
             isDarkMode ? theme.palette.primary.dark : theme.palette.primary.main
           } 40%, ${
-            isDarkMode ? theme.palette.grey[900] : theme.palette.grey[300]
+            isDarkMode ? theme.palette.grey[900] : theme.palette.grey[200]
           } 0%)`,
         }}
       >
@@ -95,7 +96,7 @@ const HomePage = () => {
             <Grid item xs={12} md={5} pr={5}>
               <Box>
                 <Image
-                  src={sampleGraphic}
+                  src={isDarkMode ? darkGraphic : lightGraphic}
                   alt="Financial Planner Graphic"
                   width={700}
                   height={400}
