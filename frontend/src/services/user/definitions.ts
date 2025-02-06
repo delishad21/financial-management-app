@@ -2,40 +2,9 @@ import { z } from "zod";
 import { SessionOptions } from "iron-session";
 import { env } from "next-runtime-env";
 
-export const SignupFormSchema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Username must be at least 3 characters long." })
-    .max(30, { message: "Username must be at most 30 characters long." })
-    .regex(/^[a-zA-Z0-9._-]+$/, {
-      message:
-        "Username can only contain letters, numbers, '.', '_', or '-'. No spaces allowed.",
-    })
-    .regex(/^(?!.*[._-]{2}).*$/, {
-      message: "Username cannot have consecutive special characters.",
-    })
-    .regex(/^[^._-].*[^._-]$/, {
-      message: "Username cannot start or end with '.', '_', or '-'.",
-    })
-    .trim(),
-  email: z.string().email({ message: "Please enter a valid email." }).trim(),
-  password: z
-    .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-    .regex(/[0-9]/, { message: "Contain at least one number." })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: "Contain at least one special character.",
-    })
-    .trim(),
-});
-
-export const LoginFormSchema = z.object({
-  identifier: z
-    .string()
-    .min(1, { message: "Please enter a valid username or email." }),
-  password: z.string().min(1, { message: "Please enter a valid password." }),
-});
+/* -------------------
+  Form State Definitions
+--------------------- */
 
 export type RegisterFormState =
   | {
@@ -43,6 +12,7 @@ export type RegisterFormState =
         username?: string[];
         email?: string[];
         password?: string[];
+        confirmPassword?: string[];
       };
       message?: string;
     }
@@ -57,6 +27,79 @@ export type LoginFormState =
       message?: string;
     }
   | undefined;
+
+export type ResetPasswordFormState =
+  | {
+      errors?: {
+        password?: string[];
+        confirmPassword?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
+/* -------------------
+  Form Schema Definitions (Zod)
+--------------------- */
+
+export const SignupFormSchema = z
+  .object({
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters long." })
+      .max(30, { message: "Username must be at most 30 characters long." })
+      .regex(/^[a-zA-Z0-9._-]+$/, {
+        message:
+          "Username can only contain letters, numbers, '.', '_', or '-'. No spaces allowed.",
+      })
+      .regex(/^(?!.*[._-]{2}).*$/, {
+        message: "Username cannot have consecutive special characters.",
+      })
+      .regex(/^[^._-].*[^._-]$/, {
+        message: "Username cannot start or end with '.', '_', or '-'.",
+      })
+      .trim(),
+    email: z.string().email({ message: "Please enter a valid email." }).trim(),
+    password: z
+      .string()
+      .min(8, { message: "Be at least 8 characters long" })
+      .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
+      .regex(/[0-9]/, { message: "Contain at least one number." })
+      .regex(/[^a-zA-Z0-9]/, {
+        message: "Contain at least one special character.",
+      })
+      .trim(),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
+export const LoginFormSchema = z.object({
+  identifier: z
+    .string()
+    .min(1, { message: "Please enter a valid username or email." }),
+  password: z.string().min(1, { message: "Please enter a valid password." }),
+});
+
+export const ResetPasswordFormSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: "Be at least 8 characters long" })
+      .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
+      .regex(/[0-9]/, { message: "Contain at least one number." })
+      .regex(/[^a-zA-Z0-9]/, {
+        message: "Contain at least one special character.",
+      })
+      .trim(),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
 
 /* -------------------
   Session Definitions

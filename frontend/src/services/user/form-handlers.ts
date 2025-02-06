@@ -5,9 +5,11 @@ import {
   LoginFormState,
   LoginFormSchema,
   SignupFormSchema,
+  ResetPasswordFormState,
+  ResetPasswordFormSchema,
 } from "./definitions";
 
-import { login, signUp } from "./actions";
+import { login, resetPassword, signUp } from "./actions";
 import { redirect } from "next/navigation";
 
 export async function handleRegister(
@@ -18,6 +20,7 @@ export async function handleRegister(
     username: formData.get("username"),
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
   });
 
   // If any form fields are invalid, return early
@@ -69,6 +72,37 @@ export async function handleLogin(
 
   // Redirect to dashboard
   redirect("/");
+}
+
+export async function handleResetPassword(
+  state: ResetPasswordFormState,
+  formData: FormData
+) {
+  const validatedFields = ResetPasswordFormSchema.safeParse({
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+  });
+
+  // If any form fields are invalid, return early
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const validPassword = validatedFields.data.password;
+
+  // Call the reset password function
+  const response = await resetPassword(validPassword);
+
+  if (response.status != "success") {
+    return {
+      message: response.message,
+    };
+  }
+
+  // Redirect to login page
+  redirect("/auth/login");
 }
 
 export async function logout() {

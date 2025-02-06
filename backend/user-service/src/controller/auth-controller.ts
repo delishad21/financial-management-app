@@ -137,7 +137,7 @@ export async function handleForgetPassword(req: CustomRequest, res: Response) {
 
     const jwt = generateEmailToken(user.id, verificationCode, expiresInSeconds);
 
-    const resetLink = `${process.env.FRONTEND_URL}/sign-in/forgot-password/reset?token=${jwt}`;
+    const resetLink = `${process.env.FRONTEND_URL}/auth/forgot-password/reset?token=${jwt}`;
     await sendPasswordResetLink(user.email, user.username, resetLink);
     console.log(`[AUTH] Reset link email sent - Username: ${user.username}`);
 

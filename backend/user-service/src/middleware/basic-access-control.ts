@@ -273,12 +273,12 @@ export function verifyIsOwnerOrAdmin(
 
   if (isAdmin) {
     console.log(`[AUTH] Admin access granted for user: ${username}`);
-    next();
+    return next();
   }
 
   if (paramId === tokenId) {
     console.log(`[AUTH] Owner access granted for user: ${username}`);
-    next();
+    return next();
   }
 
   console.log(

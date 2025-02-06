@@ -6,54 +6,60 @@ import {
   Typography,
   Stack,
   IconButton,
-  Badge,
-  TextField,
   Button,
+  TextField,
 } from "@mui/material";
-import PageContainer from "@/components/container/PageContainer";
-import { useThemeContext } from "@/app/provider";
-import { IconMoon, IconSun } from "@tabler/icons-react";
-import { useState, useEffect } from "react";
-import { forgetPassword, verifyCode } from "@/services/user/actions";
+import { ArrowBack } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { forgetPassword } from "@/services/user/actions";
 import { set } from "lodash";
 
 const EmailConfirmation = () => {
+  const router = useRouter();
   const [identifier, setIdentifier] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(0); // Countdown state
 
+  // Helper function to calculate remaining time
+  const getRemainingTime = () => {
+    const targetTime = localStorage.getItem("countdownEndTime");
+    if (!targetTime) return 0;
+
+    const endTime = Number(targetTime);
+    const currentTime = Date.now();
+
+    // Calculate remaining time
+    const remainingTime = Math.max(0, endTime - currentTime);
+    return Math.floor(remainingTime / 1000); // in seconds
+  };
+
   useEffect(() => {
-    const savedCountdown = localStorage.getItem("countdown");
-    if (savedCountdown) {
-      setCountdown(Number(savedCountdown));
+    const savedCountdown = getRemainingTime();
+    setCountdown(savedCountdown);
+
+    // If countdown is greater than zero, start the timer
+    if (savedCountdown > 0) {
+      setMessage(
+        "Password reset link sent to your email. Ensure that you open the link in the same browser."
+      );
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          const newTime = prev - 1;
+          if (newTime <= 0) {
+            clearInterval(timer);
+            localStorage.removeItem("countdownEndTime");
+            setMessage("");
+          }
+          return newTime;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
     }
   }, []);
-
-  useEffect(() => {
-    if (countdown > 0) {
-      localStorage.setItem("countdown", countdown.toString());
-    } else {
-      setDisableSubmit(false);
-      localStorage.removeItem("countdown");
-      setMessage("");
-      setError("");
-    }
-  }, [countdown]);
-
-  // Handle countdown updates every second
-  useEffect(() => {
-    if (countdown === 0) return;
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
-
-    // Cleanup interval when countdown reaches zero
-    return () => clearInterval(timer);
-  }, [countdown]);
 
   const handleSubmit = async () => {
     if (!identifier) {
@@ -71,10 +77,10 @@ const EmailConfirmation = () => {
     }
 
     if (response.status === "success") {
-      setMessage(
-        "Password reset link sent to your email. Ensure that you open the link in the same browser."
-      );
-      setCountdown(60);
+      // Set the target end time (current time + 30 seconds)
+      const countdownEndTime = Date.now() + 30 * 1000; // 30 seconds from now
+      localStorage.setItem("countdownEndTime", countdownEndTime.toString());
+      setCountdown(30);
     }
   };
 
@@ -98,16 +104,26 @@ const EmailConfirmation = () => {
         >
           <Card
             elevation={9}
-            sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
+            sx={{
+              p: 4,
+              zIndex: 1,
+              width: "100%",
+              maxWidth: "500px",
+              position: "relative",
+            }}
           >
+            <IconButton
+              onClick={() => router.back()}
+              sx={{ position: "absolute", left: 2, top: 5 }}
+            >
+              <ArrowBack />
+            </IconButton>
             <Stack spacing={2}>
               <Typography
                 fontWeight="700"
                 variant="h3"
-                mb={2}
-                mt={2}
-                textAlign="center"
                 color="primary.main"
+                sx={{ textAlign: "center", width: "100%" }}
               >
                 Forgot Password
               </Typography>

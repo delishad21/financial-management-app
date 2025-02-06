@@ -67,6 +67,12 @@ const Menuitems = [
     icon: IconAperture,
     href: "/sample-page",
   },
+  {
+    id: uniqueId(),
+    title: "Account",
+    icon: IconUserPlus,
+    href: "/account",
+  },
 ];
 
 export default Menuitems;

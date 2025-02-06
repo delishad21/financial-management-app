@@ -42,7 +42,7 @@ router.patch(
   "/:id",
   verifyAccessTokenForUpdate,
   verifyIsOwnerOrAdmin,
-  updateUser
+  updateUser as any
 );
 
 router.post(

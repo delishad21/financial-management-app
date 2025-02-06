@@ -108,6 +108,31 @@ export default function AuthRegister({ title, subtitle }: registerType) {
               </Typography>
             )}
           </div>
+
+          <div>
+            <Typography
+              variant="subtitle1"
+              fontWeight={600}
+              component="label"
+              htmlFor="confirmPassword"
+              mb="5px"
+            >
+              Confirm Password
+            </Typography>
+            <TextField
+              id="confirmPassword"
+              name="confirmPassword"
+              variant="outlined"
+              fullWidth
+              type="password"
+              placeholder="••••••••"
+            />
+            {state?.errors?.confirmPassword && (
+              <Typography color="error" variant="body2" pt={2}>
+                {state.errors.confirmPassword}
+              </Typography>
+            )}
+          </div>
         </Stack>
 
         <SignupButton />
