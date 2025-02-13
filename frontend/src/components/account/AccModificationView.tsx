@@ -7,9 +7,17 @@ export const AccModificationView: React.FC<{
   email: string;
 }> = ({ username, email }) => {
   const [editableField, setEditableField] = useState<string | null>(null);
+  const [confirmEditableField, setConfirmEditableField] = useState<
+    string | null
+  >(null);
 
   const handleEditClick = (field: string) => {
     setEditableField(field);
+  };
+
+  const handleConfirmPassword = () => {
+    setEditableField(null);
+    setConfirmEditableField(editableField);
   };
 
   return (
@@ -34,12 +42,12 @@ export const AccModificationView: React.FC<{
           <Grid item xs={2}>
             <Button
               variant="contained"
-              color={editableField === field ? "success" : "primary"}
+              color={confirmEditableField === field ? "success" : "primary"}
               onClick={() => handleEditClick(field)}
               fullWidth
               style={{ height: "48px" }}
             >
-              {editableField === field ? "Confirm" : "Edit"}
+              {confirmEditableField === field ? "Confirm" : "Edit"}
             </Button>
           </Grid>
         </Grid>
@@ -48,7 +56,7 @@ export const AccModificationView: React.FC<{
       <ConfirmPasswordModal
         open={editableField !== null}
         onClose={() => setEditableField(null)}
-        onConfirm={() => setEditableField(null)}
+        onConfirm={handleConfirmPassword}
       />
     </Stack>
   );
